@@ -1,0 +1,28 @@
+---
+- name: Ansible Create user functionlity module demo
+  hosts: all # Defining the remote server inventory host group
+  become: true
+  remote_user: ubuntu # Using Remote user as ubuntu
+  vars:
+    repo: "git@github.ibm.com:genctl/pkr-unit-tests.git"
+    dest: "/home/ubuntu"
+    sshkey: "/home/ubuntu/.ssh/id_rsa"
+    me: ubuntu
+  tasks:
+    - name: "Add authorized keys"
+      authorized_key: 
+        user: "{{ me }}"
+        key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCyxh70rPRG9RBcjyQRkpwNjZwvh/wSRbOJqLIzKgQ8RBtn9mYND0soB+wVq0dmOMRcjPImN/r/8mOPxh4IIylkuGTLZ+/bvXj4fZ2sDqUScBwjAm60K9h/nkDCUtgCpUgQ9SA/fXX5g8B7oySmQKpkVsvI7g7iwWCt8KCJvn+kqMtdNEfDdE1qW0KtZUdz6R/LDe8H9aVOXmrdN4fer9RGnkUHNqTRxaLbJbYAveVLr73j59Cjva9rSh6YiGRSC8CSPiDIBOMvz6n9Q8lDcvt73akzCtdCtrYQ5Q4RgOfYK5yIc4yVyWIx0zcbfNRUaq9nvQMuPqTfR6z+08YjrfgzusvBstOtBbjwzD79DpUdzovjAj551UrWhDnPiA2Qbif+vha6xBpbeDWRhJqkr/5DSt4nb37lfcoNvih+w4rSilEtCPl7+9XLoeFMFBGwRqNC0Tp+L5CmxVsnZuDFqe/Z+alen9Wbh4zzVXP8MogNCgs8YMfWUdzOchXge19f4ck73x5cjOq/kdBHkTwzoTBewfbWJ/TZzcya99L7cey3cnDKunKrSZoy8L8vnd5n7NxkUibJj0TyeSSjSRDShQHhhACZMzliVqXkfbUeu1JTKZEfTKAWL0vhUuggZxBTS4xbXnCqB8+bVddjAp1PQVAN/5to6/3AX/18y0zWeMly8Q== bamazeen@brads-mbp.lan"
+    - name: Copy file with owner and permissions
+      ansible.builtin.copy:
+        src: ~/.ssh/id_rsa
+        dest: /home/ubuntu/.ssh/id_rsa
+        owner: "{{ me }}"
+        group: "{{ me }}"
+        mode: '0600'
+    - name: Copy file with owner and permissions
+      ansible.builtin.copy:
+        src: ~/.ssh/id_rsa.pub
+        dest: /home/ubuntu/.ssh/id_rsa.pub
+        owner: "{{ me }}"
+        group: "{{ me }}"
