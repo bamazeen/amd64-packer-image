@@ -1,0 +1,13 @@
+---
+- name: Ansible Create user functionlity module demo
+  hosts: all # Defining the remote server inventory host group
+  become: true
+  # remote_user: ubuntu # Using Remote user as ubuntu
+  tasks:
+    - name: Check Date with Shell command
+      shell:
+         "date"
+      register: datecmd
+      tags: datecmd
+
+    - debug: msg="{{datecmd.stdout}}"

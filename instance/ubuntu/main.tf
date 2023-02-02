@@ -22,28 +22,6 @@ resource "random_id" "this" {
   byte_length = 2
 }
 
-# resource "tls_private_key" "insecure" {
-#   algorithm = "RSA"
-#   rsa_bits  = 4096
-# }
-
-# locals {
-#   ssh_key_public  = sensitive(tls_private_key.insecure.public_key_openssh)
-#   ssh_key_private = sensitive(tls_private_key.insecure.private_key_pem)
-# }
-
-# resource "ibm_is_ssh_key" "public" {
-#   name       = "bamazeen-ssh-key"
-#   public_key = local.ssh_key_public
-
-#   # temporary idempotent workaround until RCS-3945/PR-3701 be merged
-#   lifecycle {
-#     ignore_changes = [
-#       public_key,
-#     ]
-#   }
-# }
-
 resource "ibm_is_ssh_key" "public" {
   name       = "bamazeen-ssh-public-key-${random_id.this.hex}"
   public_key = file("~/.ssh/id_rsa.pub")
@@ -104,7 +82,7 @@ data "ibm_is_image" "ubuntu" {
 
 resource "null_resource" "run_packer" {
   provisioner "local-exec" {
-    command = "ansible-galaxy install vantaworks.goss --force"
+    command = "ansible-galaxy install geerlingguy.docker"
   }
   provisioner "local-exec" {
     command = "packer version"
@@ -163,8 +141,14 @@ resource "null_resource" "ssh_one_from_the_image" {
   }
 }
 
-data "ibm_is_instance" "example" {
-  name        = ibm_is_instance.bamazeen_ubuntu_instance.name
-  private_key = file("~/.ssh/id_rsa")
-  passphrase  = ""
+resource "null_resource" "ansible" {
+  provisioner "local-exec" {
+    command = "touch ansible/hosts"
+  }
+  provisioner "local-exec" {
+    command = "echo ${ibm_is_floating_ip.bamazeen_floating_ip.address} > ansible/hosts"
+  }
+  # provisioner "local-exec" {
+  #   command = "ansible-playbook ansible/playbook.yml -u ubuntu --become -i ansible/hosts"
+  # }
 }

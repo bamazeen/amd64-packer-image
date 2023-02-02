@@ -1,28 +1,63 @@
 ---
 - name: Ansible Create user functionlity module demo
-  hosts: all # Defining the remote server inventory host group
+  hosts: all 
   become: true
-  remote_user: ubuntu # Using Remote user as ubuntu
+  # remote_user: ubuntu # Using Remote user as ubuntu
   vars:
     repo: "git@github.ibm.com:genctl/pkr-unit-tests.git"
     dest: "/home/ubuntu"
     sshkey: "/home/ubuntu/.ssh/id_rsa"
     me: ubuntu
+    docker_edition: "ce"
+    docker_package: "docker-{{ docker_edition }}"
+    docker_package_state: present
+    docker_service_state: started
+    docker_service_enabled: true
+    docker_restart_handler_state: restarted
+    docker_install_compose: true
+    docker_compose_version: "1.26.0"
+    docker_compose_path: /usr/local/bin/docker-compose
+    docker_apt_release_channel: stable
+    docker_apt_arch: amd64
+    docker_apt_repository: "deb [arch={{ docker_apt_arch }}] https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} {{ docker_apt_release_channel }}"
+    docker_apt_ignore_key_error: True
+    docker_apt_gpg_key: https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg
+    docker_users:
+      - ubuntu
+  pre_tasks:
+    - name: Add universe repository for jammy
+      apt_repository:
+        repo: deb http://archive.ubuntu.com/ubuntu jammy universe
+        state: present
+      when: ansible_distribution_release == 'jammy'
+  roles:
+    - geerlingguy.docker
   tasks:
     - name: "Add authorized keys"
       authorized_key: 
         user: "{{ me }}"
         key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCyxh70rPRG9RBcjyQRkpwNjZwvh/wSRbOJqLIzKgQ8RBtn9mYND0soB+wVq0dmOMRcjPImN/r/8mOPxh4IIylkuGTLZ+/bvXj4fZ2sDqUScBwjAm60K9h/nkDCUtgCpUgQ9SA/fXX5g8B7oySmQKpkVsvI7g7iwWCt8KCJvn+kqMtdNEfDdE1qW0KtZUdz6R/LDe8H9aVOXmrdN4fer9RGnkUHNqTRxaLbJbYAveVLr73j59Cjva9rSh6YiGRSC8CSPiDIBOMvz6n9Q8lDcvt73akzCtdCtrYQ5Q4RgOfYK5yIc4yVyWIx0zcbfNRUaq9nvQMuPqTfR6z+08YjrfgzusvBstOtBbjwzD79DpUdzovjAj551UrWhDnPiA2Qbif+vha6xBpbeDWRhJqkr/5DSt4nb37lfcoNvih+w4rSilEtCPl7+9XLoeFMFBGwRqNC0Tp+L5CmxVsnZuDFqe/Z+alen9Wbh4zzVXP8MogNCgs8YMfWUdzOchXge19f4ck73x5cjOq/kdBHkTwzoTBewfbWJ/TZzcya99L7cey3cnDKunKrSZoy8L8vnd5n7NxkUibJj0TyeSSjSRDShQHhhACZMzliVqXkfbUeu1JTKZEfTKAWL0vhUuggZxBTS4xbXnCqB8+bVddjAp1PQVAN/5to6/3AX/18y0zWeMly8Q== bamazeen@brads-mbp.lan"
-    - name: Copy file with owner and permissions
+    - name: Copy id_rsa file with owner and permissions
       ansible.builtin.copy:
         src: ~/.ssh/id_rsa
         dest: /home/ubuntu/.ssh/id_rsa
         owner: "{{ me }}"
         group: "{{ me }}"
         mode: '0600'
-    - name: Copy file with owner and permissions
+    - name: Copy id_rsa.pub file with owner and permissions
       ansible.builtin.copy:
         src: ~/.ssh/id_rsa.pub
         dest: /home/ubuntu/.ssh/id_rsa.pub
         owner: "{{ me }}"
         group: "{{ me }}"
+    - name: Copy txt file with owner and permissions
+      ansible.builtin.copy:
+        src: ../git.txt
+        dest: /home/ubuntu/git_clone_repos.sh
+        owner: "{{ me }}"
+        group: "{{ me }}"
+        mode: '777'
+    - name: Install make
+      ansible.builtin.apt:
+        name: make
+        state: present

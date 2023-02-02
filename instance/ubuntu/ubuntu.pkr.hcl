@@ -12,6 +12,10 @@ packer {
       version = ">=v3.0.1"
       source  = "github.com/IBM/ibmcloud"
     }
+    ansible = {
+      version = ">= 1.0.2"
+      source  = "github.com/hashicorp/ansible"
+    }
   }
 }
 
@@ -70,7 +74,7 @@ source "ibmcloud-vpc" "ubuntu" {
   image_name = var.image_name
 
   communicator = "ssh"
-  ssh_username = "root"
+  ssh_username = "ubuntu"
   ssh_port     = 22
   ssh_timeout  = "15m"
 
@@ -82,19 +86,12 @@ build {
     "source.ibmcloud-vpc.ubuntu"
   ]
 
-  provisioner "ansible" {
-    playbook_file = var.ansible_file
-    ansible_env_vars = [
-      "ANSIBLE_SSH_ARGS='-oHostKeyAlgorithms=+ssh-rsa -oPubkeyAcceptedKeyTypes=+ssh-rsa'",
-      "ANSIBLE_HOST_KEY_CHECKING=False"
-    ]
-  }
-  // provisioner "shell-local" {
-  //   inline = [
-  //     "echo 'head: ${data.git-repository.test.head}'",
-  //     "echo 'is_clean: ${data.git-repository.test.is_clean}'",
-  //     "echo 'branches: ${local.branches}'",
-  //     "echo 'tags: ${local.tags}'",
+  // provisioner "ansible" {
+  //   playbook_file = "./ansible/dummy.yml"
+  //   user = "ubuntu"
+  //   ansible_env_vars = [
+  //     "ANSIBLE_SSH_ARGS='-oHostKeyAlgorithms=+ssh-rsa -oPubkeyAcceptedKeyTypes=+ssh-rsa'",
+  //     "ANSIBLE_HOST_KEY_CHECKING=False"
   //   ]
   // }
 }

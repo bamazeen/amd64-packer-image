@@ -27,6 +27,8 @@ function retry {
   done
 }
 
+export ANSIBLE_HOST_KEY_CHECKING=False
+
 apt-get list | grep unattended
 retry 10 60 sudo apt remove unattended-upgrades -y
 apt-get list | grep unattended
