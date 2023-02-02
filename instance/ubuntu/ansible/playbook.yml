@@ -2,7 +2,7 @@
 - name: Ansible Create user functionlity module demo
   hosts: all 
   become: true
-  # remote_user: ubuntu # Using Remote user as ubuntu
+  remote_user: ubuntu # Using Remote user as ubuntu
   vars:
     repo: "git@github.ibm.com:genctl/pkr-unit-tests.git"
     dest: "/home/ubuntu"
@@ -47,6 +47,19 @@
     - name: Copy id_rsa.pub file with owner and permissions
       ansible.builtin.copy:
         src: ~/.ssh/id_rsa.pub
+        dest: /home/ubuntu/.ssh/id_rsa.pub
+        owner: "{{ me }}"
+        group: "{{ me }}"
+    - name: Copy git_id_rsa file with owner and permissions
+      ansible.builtin.copy:
+        src: ~/.ssh/git_id_rsa
+        dest: /home/ubuntu/.ssh/id_rsa
+        owner: "{{ me }}"
+        group: "{{ me }}"
+        mode: '0600'
+    - name: Copy git_id_rsa.pub file with owner and permissions
+      ansible.builtin.copy:
+        src: ~/.ssh/git_id_rsa.pub
         dest: /home/ubuntu/.ssh/id_rsa.pub
         owner: "{{ me }}"
         group: "{{ me }}"
