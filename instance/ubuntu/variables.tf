@@ -30,6 +30,6 @@ variable "total_ipv4_address_count" {
 }
 
 variable "profile" {
-  default = "cx2-2x4"
+  default = "cx2-4x8"
   type    = string
 }

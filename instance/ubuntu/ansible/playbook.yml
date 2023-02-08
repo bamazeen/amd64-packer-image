@@ -63,13 +63,20 @@
         dest: /home/ubuntu/.ssh/git_id_rsa.pub
         owner: "{{ me }}"
         group: "{{ me }}"
-    - name: Copy txt file with owner and permissions
+    - name: Copy sh file with owner and permissions
       ansible.builtin.copy:
         src: ../git.txt
         dest: /home/ubuntu/git_clone_repos.sh
         owner: "{{ me }}"
         group: "{{ me }}"
         mode: '777'
+    - name: Copy txt file with owner and permissions
+      ansible.builtin.copy:
+        src: ../commands.txt
+        dest: /home/ubuntu/commands.txt
+        owner: "{{ me }}"
+        group: "{{ me }}"
+        mode: '06400'
     - name: Install make
       ansible.builtin.apt:
         name: make

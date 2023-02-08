@@ -1,0 +1,18 @@
+docker login https://wcp-genctl-sandbox-docker-local.artifactory.swg-devops.com
+make -e region=us-east debug-container
+sudo apt install cpu-checker -y
+sudo apt install qemu-kvm virt-manager virtinst libvirt-clients bridge-utils libvirt-daemon-system -y
+
+18  sudo apt install cpu-checker
+   19  kvm-ok
+   20  sudo apt update
+   21  sudo apt install qemu-kvm virt-manager virtinst libvirt-clients bridge-utils libvirt-daemon-system -y
+   22  sudo systemctl enable --now libvirtd
+   23  sudo systemctl start libvirtd
+   24  sudo systemctl status libvirtd
+   25  sudo apt install  software-properties-common gnupg2 curl
+   26  curl https://apt.releases.hashicorp.com/gpg | gpg --dearmor > hashicorp.gpg
+   27  sudo install -o root -g root -m 644 hashicorp.gpg /etc/apt/trusted.gpg.d/
+   28  sudo apt-add-repository "deb [arch=$(dpkg --print-architecture)] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+   29  sudo apt install terraform
+   30  sudo apt install packer
