@@ -53,14 +53,14 @@
     - name: Copy git_id_rsa file with owner and permissions
       ansible.builtin.copy:
         src: ~/.ssh/git_id_rsa
-        dest: /home/ubuntu/.ssh/id_rsa
+        dest: /home/ubuntu/.ssh/git_id_rsa
         owner: "{{ me }}"
         group: "{{ me }}"
         mode: '0600'
     - name: Copy git_id_rsa.pub file with owner and permissions
       ansible.builtin.copy:
         src: ~/.ssh/git_id_rsa.pub
-        dest: /home/ubuntu/.ssh/id_rsa.pub
+        dest: /home/ubuntu/.ssh/git_id_rsa.pub
         owner: "{{ me }}"
         group: "{{ me }}"
     - name: Copy txt file with owner and permissions
